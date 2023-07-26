@@ -1,0 +1,55 @@
+// working  on patterns like circle, square, raster , vector,or combination of them
+// similar thing could be done for other shapes like square , rectangle etc
+package main
+
+import (
+	"fmt"
+)
+
+type Renderer interface {
+	Rendercircle(radius float64)
+}
+
+type VectorRenderer struct {
+}
+
+func (v *VectorRenderer) Rendercircle(radius float64) {
+	fmt.Println("Drawing a circle", radius)
+}
+
+type RasterRender struct {
+	Dpi int
+}
+
+func (r *RasterRender) Rendercircle(radius float64) {
+	fmt.Println("Drawing of the circle", radius)
+}
+
+type circle struct {
+	renderer Renderer
+	radius   float64
+}
+
+func NewCircle(renderer Renderer, radius float64) *circle {
+	return &circle{renderer: renderer, radius: radius}
+
+}
+func (c *circle) Draw() {
+	c.renderer.Rendercircle(c.radius)
+}
+
+func (c *circle) Resize(factor float64) {
+	c.radius *= factor //multiplying the given factor with the given radius
+}
+func main() {
+	raster := RasterRender{}
+	vector := VectorRenderer{}
+	circle := NewCircle(&raster, 5)
+	circle1 := NewCircle(&vector, 10)
+	circle.Draw()
+	circle.Resize(10)
+	circle.Draw()
+	circle1.Draw()
+	circle1.Resize(10)
+	circle1.Draw()
+}
